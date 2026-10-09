@@ -1,0 +1,37 @@
+<div class="date-range-picker">
+  <span class="label">Date Range</span>
+
+  <div class="date-field">
+    <button type="button" class="date-input" (click)="toggleFrom($event)" aria-label="Select from date">
+      <span [class.placeholder]="!start">{{ fromDisplay }}</span><span class="calendar-icon">
+        <img src="../../../assets/images/calendar.svg">
+      </span>
+    </button>
+    <div class="calendar-popup" *ngIf="fromOpen" (click)="$event.stopPropagation()">
+      <div class="calendar-header"><button type="button" (click)="previousFrom($event)">‹</button><strong>{{ fromTitle }}</strong><button type="button" (click)="nextFrom($event)">›</button></div>
+      <div class="calendar-caption">Select From date</div>
+      <div class="weekdays"><span *ngFor="let day of ['Su','Mo','Tu','We','Th','Fr','Sa']">{{ day }}</span></div>
+      <div class="days-grid">
+        <button type="button" *ngFor="let day of fromDays" class="day" [class.other-month]="!day.currentMonth" [class.in-range]="isInRange(day)" [class.start]="isFrom(day)" [class.end]="isTo(day)" (click)="selectFrom(day, $event)">{{ day.day }}</button>
+      </div>
+    </div>
+  </div>
+
+  <span class="to-separator">to</span>
+
+  <div class="date-field">
+    <button type="button" class="date-input" (click)="toggleTo($event)" aria-label="Select to date">
+      <span [class.placeholder]="!end">{{ toDisplay }}</span><span class="calendar-icon">
+         <img src="../../../assets/images/calendar.svg">
+      </span>
+    </button>
+    <div class="calendar-popup to-calendar" *ngIf="toOpen" (click)="$event.stopPropagation()">
+      <div class="calendar-header"><button type="button" (click)="previousTo($event)">‹</button><strong>{{ toTitle }}</strong><button type="button" (click)="nextTo($event)">›</button></div>
+      <div class="calendar-caption">Select To date</div>
+      <div class="weekdays"><span *ngFor="let day of ['Su','Mo','Tu','We','Th','Fr','Sa']">{{ day }}</span></div>
+      <div class="days-grid">
+        <button type="button" *ngFor="let day of toDays" class="day" [class.other-month]="!day.currentMonth" [class.in-range]="isInRange(day)" [class.start]="isFrom(day)" [class.end]="isTo(day)" (click)="selectTo(day, $event)">{{ day.day }}</button>
+      </div>
+    </div>
+  </div>
+</div>

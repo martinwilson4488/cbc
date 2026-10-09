@@ -1,0 +1,25 @@
+.action-btn {
+    border: 1px solid #005758;
+    background: #fff;
+    border-radius: 4px;
+    padding: 8px 14px;
+    color: #005758;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer
+}
+
+.action-btn:hover {
+    background: #f2f7fa
+}
+
+.action-btn.link {
+    border: 0;
+    background: transparent;
+    padding: 5px 8px;
+    color: #006da6
+}
+
+.action-btn span {
+    margin-right: 6px
+}

@@ -1,0 +1,36 @@
+<header class="cbc-header">
+  <div class="header-left">
+    <a class="brand" href="#" aria-label="TD SYNNEX home">
+      <span class="brand-symbol" aria-hidden="true"><img src="../../assets/images/Symbols.svg"></span>
+      <span class="brand-name"><img src="../../assets/images/Shape.svg"></span>
+    </a>
+
+    <div class="product-selector">
+      <button
+        class="product-button"
+        type="button">
+        <span>{{ productName }}</span>
+        <span class="chevron" aria-hidden="true"><img src="../../assets/images/arrow-down.svg"></span>
+      </button>
+
+      <div class="product-menu" *ngIf="menuOpen">
+        <button type="button" (click)="closeProductMenu()">{{ productName }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button class="icon-button sparkle" type="button" aria-label="Quick actions" title="Quick actions"> 
+      <img src="../../assets/images/AI.svg">
+    </button>
+
+    <button class="icon-button settings" type="button" aria-label="Settings" title="Settings">
+      <img src="../../assets/images/app-list.svg">
+    </button>
+
+    <button class="user-button" type="button" aria-label="User profile">
+      <img src="../../assets/images/user.svg">
+      <span>{{ userName }}</span>
+    </button>
+  </div>
+</header>

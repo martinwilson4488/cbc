@@ -1,0 +1,41 @@
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr>
+      <th class="check"><input type="checkbox" [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAll()" aria-label="Select all"></th>
+      <th>Order Details</th><th>Reseller Details</th><th>Invoice ID</th><th>Cs</th><th>Country</th><th>Fx</th><th>Total VC</th><th>Total RP</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of records">
+      <td class="check"><input type="checkbox" [checked]="isSelected(row.id)" (change)="toggle(row)" [attr.aria-label]="'Select ' + row.orderNumber"></td>
+      <td class="order-cell"><strong>{{ row.orderNumber }}</strong><span class="date">{{ row.orderDate | date:'dd MMM, yyyy' }} &nbsp; {{ row.orderTime }}</span></td>
+      <td class="reseller"><strong>{{ row.reseller }}</strong><span>{{ row.resellerId }}</span></td>
+      <td>{{ row.invoiceId }}</td>
+      <td><span class="erp">ERP</span> {{ row.customerType }}</td>
+      <td>{{ row.country }}</td><td>{{ row.currency }}</td>
+      <td>{{ money(row.totalVc) }}</td><td>{{ money(row.totalRp) }}</td>
+      <td class="actions">
+        <button title="Delete">
+          <img src="../../../assets/images/red-close.svg">
+        </button>
+        <button title="Approve">
+          <img src="../../../assets/images/green-tick.svg">
+        </button>
+        <div class="more-wrap">
+          <button class="more" title="More actions" (click)="toggleMenu(row, $event)">•••</button>
+          <div class="more-menu" *ngIf="openMenuId === row.id" (click)="$event.stopPropagation()">
+            <button type="button"><span class="menu-icon">
+              <img src="../../../assets/images/delete-icon.svg">
+            </span>Delete</button>
+            <label class="menu-upload"><span class="menu-icon">
+              <img src="../../../assets/images/download.svg">
+            </span>Download CSV <input type="text" ></label>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr *ngIf="records.length === 0"><td colspan="10" class="empty">No billing records found for the selected criteria.</td></tr>
+  </tbody>
+</table>
+</div>

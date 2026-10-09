@@ -1,0 +1,14 @@
+<div class="pagination-wrap">
+  <div class="summary">{{ startItem }}-{{ endItem }} out of {{ totalItems }}</div>
+  <div class="controls">
+    <button class="arrow" [disabled]="page === 1" (click)="goTo(page - 1)" aria-label="Previous page"><</button>
+    <ng-container *ngFor="let p of pages">
+      <span *ngIf="p === -1" class="ellipsis">…</span>
+      <button *ngIf="p !== -1" class="page" [class.active]="p === page" (click)="goTo(p)">{{ p }}</button>
+    </ng-container>
+    <button class="arrow" [disabled]="page === totalPages" (click)="goTo(page + 1)" aria-label="Next page">></button>
+  </div>
+  <label class="page-size">Items per page <select [value]="pageSize" (change)="changeSize($any($event.target).value)">
+    <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option></select>
+  </label>
+</div>

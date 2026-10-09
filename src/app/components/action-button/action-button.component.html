@@ -1,0 +1,8 @@
+<button
+  [class.link]="variant === 'link'"
+  class="action-btn"
+  type="button"
+  (click)="clicked.emit()"
+>
+  <span *ngIf="icon">{{ icon }}</span>{{ label }}
+</button>

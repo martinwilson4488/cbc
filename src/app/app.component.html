@@ -1,0 +1,31 @@
+<div class="shell">
+  <app-header></app-header>
+  <main class="content">
+    <section class="filters-row">
+      <app-date-range (rangeChange)="onDateRange($event)"></app-date-range>
+      <app-action-button label="Add Filters" variant="outline"></app-action-button>
+    </section>
+
+    <section class="search-row">
+      <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
+      <app-action-button label="Map SKU" variant="link"></app-action-button>
+    </section>
+
+    <nav class="tabs">
+      <button [class.active]="activeTab==='Billing List'" (click)="setTab('Billing List')">Billing List</button>
+      <button [class.active]="activeTab==='Approved'" (click)="setTab('Approved')">Approved</button>
+      <button [class.active]="activeTab==='Completed'" (click)="setTab('Completed')">Completed</button>
+      <button [class.active]="activeTab==='Declined'" (click)="setTab('Declined')">Declined</button>
+    </nav>
+
+    <div class="toolbar">
+      <div class="selection" *ngIf="selectedCount">{{ selectedCount }} selected <button (click)="clearSelection()">Clear</button></div>
+      <button class="download" title="Download CSV">
+          <img src="../assets/images/download.svg">
+      </button>
+    </div>
+
+    <app-billing-table [records]="visibleRecords" [selectedIds]="selectedIds" (selectedIdsChange)="selectedIds=$event"></app-billing-table>
+    <app-pagination [totalItems]="filteredRecords.length" [page]="page" [pageSize]="pageSize" (pageChange)="changePage($event)" (pageSizeChange)="changePageSize($event)"></app-pagination>
+  </main>
+</div>
