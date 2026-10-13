@@ -1,25 +1,35 @@
+:host { display: inline-block; }
 .action-btn {
-    border: 1px solid #005758;
-    background: #fff;
-    border-radius: 4px;
-    padding: 8px 14px;
-    color: #005758;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer
+  border: 1px solid #005758;
+  background: #fff;
+  border-radius: 4px;
+  padding: 8px 14px;
+  color: #005758;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
 }
-
-.action-btn:hover {
-    background: #f2f7fa
-}
-
+.action-btn:hover { background: #f2f7fa; }
 .action-btn.link {
-    border: 0;
-    background: transparent;
-    padding: 5px 8px;
-    color: #006da6
+  border: 0;
+  background: transparent;
+  padding: 5px 8px;
+  color: #006da6;
 }
+.action-btn span { margin-right: 6px; }
+.action-btn-image { width: 16px; height: 16px; vertical-align: middle; }
+.icon-btn { width: 36px; height: 36px; line-height: 36px; padding: 6px; border: none; }
+.icon-btn img { display: block; width: 20px; height: 20px; margin: auto; }
+.menu-btn { width: 100%; text-align: left; }
+.menu-item-icon { width: 16px; height: 16px; margin-right: 12px; vertical-align: middle; }
 
-.action-btn span {
-    margin-right: 6px
+.action-btn.dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 8px 0;
+  color: #005758;
 }
+.dropdown-icon { width: 12px; height: 12px; }

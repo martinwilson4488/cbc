@@ -1,36 +1,53 @@
 <header class="cbc-header">
   <div class="header-left">
     <a class="brand" href="#" aria-label="TD SYNNEX home">
-      <span class="brand-symbol" aria-hidden="true"><img src="../../assets/images/Symbols.svg"></span>
-      <span class="brand-name"><img src="../../assets/images/Shape.svg"></span>
+      <span class="brand-symbol" aria-hidden="true"><img src="../../assets/images/Symbols.svg" alt=""></span>
+      <span class="brand-name"><img src="../../assets/images/Shape.svg" alt="TD SYNNEX"></span>
     </a>
 
     <div class="product-selector">
-      <button
-        class="product-button"
-        type="button">
-        <span>{{ productName }}</span>
-        <span class="chevron" aria-hidden="true"><img src="../../assets/images/arrow-down.svg"></span>
-      </button>
+      <app-action-button
+        [label]="productName"
+        iconSrc="../../assets/images/arrow-down.svg"
+        variant="dropdown"
+        [ariaLabel]="'Select product. Current product: ' + productName"
+        [title]="productName"
+        (clicked)="toggleProductMenu()">
+      </app-action-button>
 
       <div class="product-menu" *ngIf="menuOpen">
-        <button type="button" (click)="closeProductMenu()">{{ productName }}</button>
+        <app-action-button
+          *ngFor="let product of products"
+          [label]="product"
+          variant="menu"
+          (clicked)="selectProduct(product)">
+        </app-action-button>
       </div>
     </div>
   </div>
 
   <div class="header-right">
-    <button class="icon-button sparkle" type="button" aria-label="Quick actions" title="Quick actions"> 
-      <img src="../../assets/images/AI.svg">
-    </button>
+    <app-action-button
+      label="Quick actions"
+      iconSrc="../../assets/images/AI.svg"
+      variant="icon"
+      ariaLabel="Quick actions">
+    </app-action-button>
 
-    <button class="icon-button settings" type="button" aria-label="Settings" title="Settings">
-      <img src="../../assets/images/app-list.svg">
-    </button>
+    <app-action-button
+      label="Settings"
+      iconSrc="../../assets/images/app-list.svg"
+      variant="icon"
+      ariaLabel="Settings">
+    </app-action-button>
 
-    <button class="user-button" type="button" aria-label="User profile">
-      <img src="../../assets/images/user.svg">
-      <span>{{ userName }}</span>
-    </button>
+    <app-action-button
+      class="profileClass"
+      [label]="userName"
+      iconSrc="../../assets/images/user.svg"
+      variant="menu"
+      ariaLabel="User profile"
+      title="User profile">
+    </app-action-button>
   </div>
 </header>

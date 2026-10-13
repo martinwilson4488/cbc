@@ -8,6 +8,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class ActionButtonComponent {
   @Input() label = '';
   @Input() icon = '';
-  @Input() variant: 'outline' | 'link' = 'outline';
+  @Input() iconSrc = '';
+  @Input() title = '';
+  @Input() ariaLabel = '';
+  @Input() variant: 'profile' | 'outline' | 'link' | 'icon' | 'menu' | 'dropdown' = 'outline';
   @Output() clicked = new EventEmitter<void>();
 }

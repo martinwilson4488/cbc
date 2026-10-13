@@ -14,7 +14,6 @@
 .header-left,
 .header-right,
 .brand,
-.product-button,
 .user-button {
   display: flex;
   align-items: center;
@@ -48,23 +47,7 @@
   position: relative;
 }
 
-.product-button {
-  gap: 10px;
-  padding: 12px 0;
-  border: 0;
-  background: transparent;
-  color: #005758;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.chevron {
-  color: #657680; 
-  font-size: 17px;
-  transform: translateY(3px);
-}
+.product-selector app-action-button { display: inline-block; }
 
 .product-menu {
   position: absolute;
@@ -79,28 +62,15 @@
   box-shadow: 0 8px 22px rgba(25, 44, 57, 0.12);
 }
 
-.product-menu button {
-  width: 100%;
-  padding: 10px;
-  border: 0;
-  border-radius: 3px;
-  background: #ffffff;
-  color: #005758;
-  text-align: left;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.product-menu button:hover {
-  background: #f2f6f8;
-}
+.product-menu app-action-button { display: block; width: 100%; }
+.product-menu ::ng-deep .menu-btn { color: #005758; padding: 10px; border-radius: 3px; }
+.product-menu ::ng-deep .menu-btn:hover { background: #f2f6f8; }
 
 .header-right {
   gap: 20px;
   margin-left: auto;
 }
 
-.icon-button,
 .user-button {
   justify-content: center;
   padding: 5px;
@@ -110,21 +80,7 @@
   cursor: pointer;
 }
 
-.icon-button svg {
-  display: block;
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.sparkle svg {
-  width: 21px;
-  height: 21px;
-}
+.header-right app-action-button { display: inline-block; }
 
 .user-button {
   gap: 7px;
@@ -140,9 +96,7 @@
   stroke-width: 1.4;
 }
 
-.icon-button:hover,
-.user-button:hover,
-.product-button:hover {
+.user-button:hover {
   color: #0879bd;
 }
 
@@ -163,7 +117,5 @@
     gap: 12px;
   }
 
-  .product-button {
-    font-size: 12px;
-  }
+  .product-selector { max-width: 100%; }
 }

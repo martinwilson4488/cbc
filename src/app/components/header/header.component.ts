@@ -6,16 +6,23 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  productName = 'Cloud billing connector';
+  productName = 'Cloud Billing Connector';
   readonly userName = 'Nick';
+  readonly products = [
+    'Cloud Billing Connector',
+    'Billing',
+    'Subscriptions',
+    'Orders',
+    'Invoices'
+  ];
   menuOpen = false;
-  
 
   toggleProductMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
 
-  closeProductMenu(): void {
+  selectProduct(product: string): void {
+    this.productName = product;
     this.menuOpen = false;
   }
 }

@@ -15,8 +15,8 @@ export class AppComponent implements OnInit {
   selectedIds = new Set<number>();
   activeTab: BillingRecord['status'] = 'Billing List';
   searchTerm = '';
-  startDate = '2024-04-17';
-  endDate = '2026-10-08';
+  startDate = '';
+  endDate = '';
   page = 1;
   pageSize = 10;
   filterOpen = false;

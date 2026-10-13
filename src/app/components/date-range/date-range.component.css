@@ -1,176 +1,51 @@
 .date-range-picker {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-
 .label {
-    font-size: 14px;
-    font-weight: 400;
-    color: #262626;
-    white-space: nowrap
+  color: #37474f;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 2px;
 }
-
 .date-field {
-    position: relative
+  width: 190px;
+  font-size: 13px;
 }
-
-.date-input {
-    height: 38px;
-    min-width: 155px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 0 10px;
-    border: 1px solid #c9d4da;
-    border-radius: 3px;
-    background: #fff;
-    color: #303c45;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: left
-}
-
-.date-input:hover {
-    border-color: #7d9aa8
-}
-
-.placeholder {
-    color: #66757e
-}
-
-.calendar-icon {
-    font-size: 15px;
-    color: #526771
-}
-
 .to-separator {
-    font-size: 13px;
-    color: #66757e
+  color: #64747b;
+  font-size: 13px;
+  margin-top: 0;
 }
-
-.calendar-popup {
-    position: absolute;
-    z-index: 1000;
-    top: 45px;
-    left: 0;
-    width: 300px;
-    padding: 14px;
-    background: #fff;
-    border: 1px solid #cbd7dd;
-    border-radius: 5px;
-    box-shadow: 0 7px 20px rgba(20, 40, 50, .16)
+:host ::ng-deep .date-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }
-
-.to-calendar {
-    left: 0
+:host ::ng-deep .date-field .mat-mdc-text-field-wrapper {
+  background: #fff;
+  height: 40px;
 }
-
-.calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 7px
+:host ::ng-deep .date-field .mat-mdc-form-field-infix {
+  min-height: 42px;
+  padding-top: 10px;
+  padding-bottom: 8px;
 }
-
-.calendar-header strong {
-    font-size: 14px;
-    color: #263943
+:host ::ng-deep .date-field .mat-mdc-form-field-flex {
+  align-items: center;
 }
-
-.calendar-header button {
-    width: 30px;
-    height: 30px;
-    border: 0;
-    background: transparent;
-    font-size: 23px;
-    color: #445861;
-    cursor: pointer
+:host ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+    top: 20px;
 }
-
-.calendar-caption {
-    font-size: 11px;
-    color: #006a9f;
-    font-weight: 700;
-    margin: 4px 0 9px
+:host ::ng-deep .mat-mdc-icon-button.mat-mdc-button-base {
+    width: 40px;
+    height: 40px;
+    padding: 0;
 }
-
-.weekdays,
-.days-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center
+:host ::ng-deep .mat-mdc-icon-button .mat-mdc-button-touch-target {
+    height: 40px;
+    width: 40px;
 }
-
-.weekdays {
-    margin-bottom: 5px
-}
-
-.weekdays span {
-    font-size: 10px;
-    font-weight: 700;
-    color: #78868e;
-    padding: 4px 0
-}
-
-.day {
-    height: 32px;
-    border: 0;
-    background: transparent;
-    color: #33454e;
-    font-size: 12px;
-    cursor: pointer
-}
-
-.day:hover {
-    background: #e6f1f5;
-    border-radius: 50%
-}
-
-.day.other-month {
-    color: #b3bdc2
-}
-
-.day.in-range {
-    background: #edf5f7
-}
-
-.day.start,
-.day.end {
-    background: #315564;
-    color: #fff;
-    font-weight: 700;
-    border-radius: 50%;
-    width: 28px;
-    justify-self: center
-}
-
-@media(max-width:900px) {
-    .date-range-picker {
-        flex-wrap: wrap
-    }
-
-    .calendar-popup {
-        width: 290px
-    }
-
-    .date-input {
-        min-width: 145px
-    }
-}
-
-@media(max-width:600px) {
-    .label {
-        width: 100%
-    }
-
-    .date-range-picker {
-        align-items: center
-    }
-
-    .date-input {
-        min-width: 135px
-    }
+@media (max-width: 640px) {
+  .date-field { width: 160px; }
 }

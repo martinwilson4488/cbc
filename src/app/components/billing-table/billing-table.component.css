@@ -40,7 +40,7 @@ tr:hover td {
 .check input {
     width: 17px;
     height: 17px;
-    accent-color: #1673a5
+    accent-color: #26353d
 }
 
 .order-cell strong {
@@ -168,7 +168,8 @@ tr:hover td {
     width: 15px;
     color: #52656e;
     font-size: 15px;
-    img{
+
+    img {
         width: 100%;
     }
 }
@@ -179,4 +180,188 @@ tr:hover td {
 
 .actions .more {
     font-size: 12px
+}
+
+/* Angular Material table layout; component remains reusable through records/selection inputs. */
+.billing-mat-table {
+    width: 100%;
+    background: #fff;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.billing-mat-table .mat-mdc-header-cell {
+    background: #f5f7f8;
+    color: #45545b;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 1px solid #e1e6e8;
+}
+
+.billing-mat-table .mat-mdc-cell {
+    color: #34454d;
+    font-size: 12px;
+    border-bottom: 1px solid #edf0f2;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.billing-mat-table .mat-mdc-row:hover {
+    background: #fafcfd;
+}
+
+.billing-mat-table .mat-column-select {
+    width: 44px;
+    padding-left: 12px;
+    padding-right: 8px;
+}
+
+.billing-mat-table .mat-column-actions {
+    min-width: 132px;
+    white-space: nowrap;
+}
+
+.billing-mat-table .mat-column-orderDetails {
+    min-width: 150px;
+}
+
+.billing-mat-table .mat-column-resellerDetails {
+    min-width: 150px;
+}
+
+.billing-mat-table .order-cell,
+.billing-mat-table .reseller {
+    display: table-cell;
+}
+
+.billing-mat-table .order-cell strong,
+.billing-mat-table .order-cell .date,
+.billing-mat-table .reseller strong,
+.billing-mat-table .reseller span {
+    display: block;
+}
+
+.billing-mat-table .date,
+.billing-mat-table .reseller span {
+    margin-top: 4px;
+    color: #78868c;
+    font-size: 11px;
+}
+
+.billing-mat-table .actions button {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+    padding: 4px;
+}
+
+.billing-mat-table .actions button img {
+    width: 16px;
+    height: 16px;
+}
+
+.billing-mat-table .more-wrap {
+    display: inline-block;
+    position: relative;
+}
+
+.billing-mat-table .more-menu {
+    position: absolute;
+    z-index: 20;
+    right: 0;
+    top: 30px;
+    min-width: 145px;
+    background: #fff;
+    border: 1px solid #dce2e5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+    border-radius: 4px;
+    padding: 4px 0;
+}
+
+.billing-mat-table .more-menu button,
+.billing-mat-table .menu-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    background: #fff;
+    color: #34454d;
+    text-align: left;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.billing-mat-table .more-menu button:hover,
+.billing-mat-table .menu-upload:hover {
+    background: #f4f7f8;
+}
+
+.billing-mat-table .menu-icon img {
+    width: 15px;
+    height: 15px;
+}
+
+.billing-mat-table .menu-upload input {
+    display: none;
+}
+
+.billing-mat-table .empty {
+    text-align: center;
+    padding: 28px;
+    color: #78868c;
+}
+
+/* Keep native table-cell layout intact to prevent row/column alignment issues. */
+.billing-mat-table .mat-cell,
+.billing-mat-table .mat-mdc-cell,
+.billing-mat-table td.actions {
+    box-sizing: border-box;
+    border-bottom: 1px solid #e5e9eb;
+    vertical-align: middle;
+}
+
+.billing-mat-table .actions {
+    display: table-cell;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.billing-mat-table .actions .mat-button,
+.billing-mat-table .actions .mat-mdc-button {
+    vertical-align: middle;
+}
+
+.billing-mat-table .more {
+    min-width: 30px;
+    line-height: 30px;
+    padding: 0 4px;
+}
+
+.hidden-upload {
+    display: none;
+}
+
+.menu-item-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    object-fit: contain;
+}
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
+    background-color: #005758!important;
+    border-color: #005758!important;
+}
+:host ::ng-deep .mat-mdc-checkbox.mat-accent .mdc-checkbox--selected~.mdc-checkbox__ripple {
+    background: transparent;
+}
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background{
+    background-color: #005758!important;
+    border-color: #005758!important;
+}
+:host ::ng-deep .billing-row-menu .mat-mdc-menu-content{
+    display: flex;
+    flex-direction: column;
 }
