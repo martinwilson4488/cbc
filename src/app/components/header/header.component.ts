@@ -9,11 +9,7 @@ export class HeaderComponent {
   productName = 'Cloud Billing Connector';
   readonly userName = 'Nick';
   readonly products = [
-    'Cloud Billing Connector',
-    'Billing',
-    'Subscriptions',
-    'Orders',
-    'Invoices'
+    'Cloud Billing Connector'
   ];
   menuOpen = false;
 

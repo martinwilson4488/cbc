@@ -1,26 +1,95 @@
 <ng-container [ngSwitch]="variant">
-  <button *ngSwitchCase="'icon'" mat-icon-button class="action-btn icon-btn" type="button"
-          [attr.title]="title || label" [attr.aria-label]="ariaLabel || label" (click)="clicked.emit()">
-    <img *ngIf="iconSrc" [src]="iconSrc" [alt]="''">
+
+  <!-- Icon button -->
+  <button
+    *ngSwitchCase="'icon'"
+    mat-icon-button
+    class="action-btn icon-btn"
+    type="button"
+    [disabled]="disabled"
+    [attr.title]="title || label"
+    [attr.aria-label]="ariaLabel || label"
+    (click)="clicked.emit()">
+
+    <img *ngIf="iconSrc" [src]="iconSrc" alt="">
     <span *ngIf="!iconSrc && icon">{{ icon }}</span>
     <span *ngIf="!iconSrc && !icon">{{ label }}</span>
   </button>
 
-  <button *ngSwitchCase="'menu'" mat-menu-item class="menu-btn" type="button"
-          [attr.aria-label]="ariaLabel || label" (click)="clicked.emit()">
-    <img *ngIf="iconSrc" class="menu-item-icon" [src]="iconSrc" [alt]="''">
-    <span *ngIf="icon">{{ icon }}</span>{{ label }}
+  <!-- Menu button -->
+  <button
+    *ngSwitchCase="'menu'"
+    mat-menu-item
+    class="menu-btn"
+    type="button"
+    [disabled]="disabled"
+    [attr.aria-label]="ariaLabel || label"
+    (click)="clicked.emit()">
+
+    <img
+      *ngIf="iconSrc"
+      class="menu-item-icon"
+      [src]="iconSrc"
+      alt="">
+
+    <span *ngIf="icon">{{ icon }}</span>
+    {{ label }}
   </button>
 
-  <button *ngSwitchCase="'dropdown'" class="action-btn dropdown-btn" type="button"
-          [attr.title]="title || label" [attr.aria-label]="ariaLabel || label" (click)="clicked.emit()">
+  <!-- Dropdown button -->
+  <button
+    *ngSwitchCase="'dropdown'"
+    class="action-btn dropdown-btn"
+    type="button"
+    [disabled]="disabled"
+    [attr.title]="title || label"
+    [attr.aria-label]="ariaLabel || label"
+    (click)="clicked.emit()">
+
     <span>{{ label }}</span>
-    <img *ngIf="iconSrc" class="action-btn-image dropdown-icon" [src]="iconSrc" [alt]="''">
+    <img
+      *ngIf="iconSrc"
+      class="action-btn-image dropdown-icon"
+      [src]="iconSrc"
+      alt="">
   </button>
 
-  <button *ngSwitchDefault [class.link]="variant === 'link'" class="action-btn" type="button"
-          [attr.title]="title || label" [attr.aria-label]="ariaLabel || label" (click)="clicked.emit()">
-    <img *ngIf="iconSrc" class="action-btn-image" [src]="iconSrc" [alt]="''">
-    <span *ngIf="icon">{{ icon }}</span>{{ label }}
+  <!-- Pagination button -->
+  <button
+    *ngSwitchCase="'page'"
+    class="action-btn page-btn"
+    type="button"
+    [class.active]="active"
+    [disabled]="disabled"
+    [attr.title]="title || label"
+    [attr.aria-label]="ariaLabel || label"
+    [attr.aria-current]="active ? 'page' : null"
+    (click)="clicked.emit()">
+
+    {{ label }}
   </button>
+
+  <!-- Default, profile, outline and link buttons -->
+  <button
+    *ngSwitchDefault
+    class="action-btn"
+    [class.link]="variant === 'link'"
+    [class.profile-btn]="variant === 'profile'"
+    [class.active]="active"
+    type="button"
+    [disabled]="disabled"
+    [attr.title]="title || label"
+    [attr.aria-label]="ariaLabel || label"
+    (click)="clicked.emit()">
+
+    <img
+      *ngIf="iconSrc"
+      class="action-btn-image"
+      [src]="iconSrc"
+      alt="">
+
+    <span *ngIf="icon">{{ icon }}</span>
+    <span>{{ label }}</span>
+  </button>
+
 </ng-container>

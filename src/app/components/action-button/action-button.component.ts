@@ -11,6 +11,18 @@ export class ActionButtonComponent {
   @Input() iconSrc = '';
   @Input() title = '';
   @Input() ariaLabel = '';
-  @Input() variant: 'profile' | 'outline' | 'link' | 'icon' | 'menu' | 'dropdown' = 'outline';
+  @Input() disabled = false;
+  @Input() active = false;
+
+  @Input()
+  variant:
+    | 'profile'
+    | 'outline'
+    | 'link'
+    | 'icon'
+    | 'menu'
+    | 'dropdown'
+    | 'page' = 'outline';
+
   @Output() clicked = new EventEmitter<void>();
 }

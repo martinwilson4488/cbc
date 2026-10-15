@@ -1,14 +1,58 @@
 <div class="pagination-wrap">
-  <div class="summary">{{ startItem }}-{{ endItem }} out of {{ totalItems }}</div>
+  <div class="summary">
+    {{ startItem }}-{{ endItem }} out of {{ totalItems }}
+  </div>
+
   <div class="controls">
-    <button class="arrow" [disabled]="page === 1" (click)="goTo(page - 1)" aria-label="Previous page"><</button>
+    <!-- Previous page -->
+    <app-action-button
+      variant="icon"
+      label="Previous page"
+      title="Previous page"
+      ariaLabel="Previous page"
+      iconSrc="assets/images/left-arrow.svg"
+      [disabled]="page === 1"
+      (clicked)="goTo(page - 1)">
+    </app-action-button>
+
+    <!-- Page numbers -->
     <ng-container *ngFor="let p of pages">
       <span *ngIf="p === -1" class="ellipsis">…</span>
-      <button *ngIf="p !== -1" class="page" [class.active]="p === page" (click)="goTo(p)">{{ p }}</button>
+
+      <app-action-button
+        *ngIf="p !== -1"
+        variant="page"
+        [label]="p.toString()"
+        [title]="'Page ' + p"
+        [ariaLabel]="'Go to page ' + p"
+        [active]="p === page"
+        [disabled]="p === page"
+        (clicked)="goTo(p)">
+      </app-action-button>
     </ng-container>
-    <button class="arrow" [disabled]="page === totalPages" (click)="goTo(page + 1)" aria-label="Next page">></button>
+
+    <!-- Next page -->
+    <app-action-button
+      variant="icon"
+      label="Next page"
+      title="Next page"
+      ariaLabel="Next page"
+      iconSrc="assets/images/right-arrow.svg"
+      [disabled]="page >= totalPages"
+      (clicked)="goTo(page + 1)">
+    </app-action-button>
   </div>
-  <label class="page-size">Items per page <select [value]="pageSize" (change)="changeSize($any($event.target).value)">
-    <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option></select>
+
+  <!-- Items per page -->
+  <label class="page-size">
+    Items per page
+
+    <select
+      [value]="pageSize"
+      (change)="changeSize($any($event.target).value)">
+      <option *ngFor="let size of pageSizes" [value]="size">
+        {{ size }}
+      </option>
+    </select>
   </label>
 </div>
