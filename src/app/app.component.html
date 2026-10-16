@@ -1,31 +1,151 @@
 <div class="shell">
   <app-header></app-header>
+
   <main class="content">
     <section class="filters-row">
-      <app-date-range (rangeChange)="onDateRange($event)"></app-date-range>
-      <app-action-button label="Add Filters" variant="outline"></app-action-button>
+      <app-date-range
+        (rangeChange)="onDateRange($event)">
+      </app-date-range>
+
+      <app-action-button
+        [label]="uiConfig.filtersButtonLabel"
+        [variant]="uiConfig.filtersButtonVariant">
+      </app-action-button>
     </section>
 
     <section class="search-row">
-      <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
-      <app-action-button label="Map SKU" variant="link"></app-action-button>
+      <app-search-bar
+        (searchChange)="onSearch($event)">
+      </app-search-bar>
+
+      <app-action-button
+        [label]="uiConfig.mapSkuButtonLabel"
+        [variant]="uiConfig.mapSkuButtonVariant">
+      </app-action-button>
     </section>
 
-    <nav class="tabs">
-      <button [class.active]="activeTab==='Billing List'" (click)="setTab('Billing List')">Billing List</button>
-      <button [class.active]="activeTab==='Approved'" (click)="setTab('Approved')">Approved</button>
-      <button [class.active]="activeTab==='Completed'" (click)="setTab('Completed')">Completed</button>
-      <button [class.active]="activeTab==='Declined'" (click)="setTab('Declined')">Declined</button>
-    </nav>
+      <nav class="tabs">
+        <app-action-button
+          *ngFor="let tab of billingTabs"
+          variant="outline"
+          [label]="tab.label"
+          [active]="activeTab === tab.value"
+          (clicked)="setTab(tab.value)">
+        </app-action-button>
+      </nav>
 
     <div class="toolbar">
-      <div class="selection" *ngIf="selectedCount">{{ selectedCount }} selected <button (click)="clearSelection()">Clear</button></div>
-      <button class="download" title="Download CSV">
-          <img src="../assets/images/download.svg">
-      </button>
+      <div class="selection" *ngIf="selectedCount > 0">
+        {{ selectedCount }} {{ uiConfig.selectedLabel }}
+
+        <button type="button" (click)="clearSelection()">
+          {{ uiConfig.clearLabel }}
+        </button>
+      </div>
+
+      <app-action-button
+        class="download-btn"
+        [label]="uiConfig.downloadButtonLabel"
+        [iconSrc]="uiConfig.downloadIcon"
+        [ariaLabel]="uiConfig.downloadButtonLabel"
+        [title]="uiConfig.downloadButtonLabel"
+        [variant]="uiConfig.downloadButtonVariant"
+        (clicked)="openDownloadPanel()">
+      </app-action-button>
     </div>
 
-    <app-billing-table [records]="visibleRecords" [selectedIds]="selectedIds" (selectedIdsChange)="selectedIds=$event"></app-billing-table>
-    <app-pagination [totalItems]="filteredRecords.length" [page]="page" [pageSize]="pageSize" (pageChange)="changePage($event)" (pageSizeChange)="changePageSize($event)"></app-pagination>
+    <app-billing-table
+      [records]="visibleRecords"
+      [selectedIds]="selectedIds"
+      (selectedIdsChange)="onSelectedIdsChange($event)">
+    </app-billing-table>
+
+    <app-pagination
+      [totalItems]="filteredRecords.length"
+      [page]="page"
+      [pageSize]="pageSize"
+      (pageChange)="changePage($event)"
+      (pageSizeChange)="changePageSize($event)">
+    </app-pagination>
+
+    <app-side-panel
+      [visible]="isDownloadPanelOpen"
+      [title]="downloadPanelConfig.title"
+      [tabs]="downloadPanelConfig.tabs"
+      [activeTab]="activeDownloadTab"
+      [primaryActionLabel]="downloadPanelConfig.actionLabel"
+      [primaryActionDisabled]="!canDownload"
+      (closed)="closeDownloadPanel()"
+      (activeTabChange)="onDownloadTabChange($event)"
+      (primaryAction)="downloadSelectedStatuses()">
+
+      <ng-container *ngIf="activeDownloadTab === 'all'">
+
+        <div class="download-status-list">
+          <div
+            class="download-status-option"
+            *ngFor="let status of availableStatuses">
+
+            <mat-checkbox
+              [checked]="selectedStatuses.has(status.value)"
+              (change)="toggleStatus(status.value, $event.checked)">
+              {{ status.label }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="activeDownloadTab === 'negative-charges'">
+        <p class="negative-help">
+          {{ downloadPanelConfig.negativeChargesHelp }}
+        </p>
+
+        <div class="download-form-field">
+          <label for="download-country">
+            {{ downloadPanelConfig.countryLabel }}
+            <span>*</span>
+          </label>
+
+          <select
+            id="download-country"
+            [ngModel]="selectedCountry"
+            (ngModelChange)="onCountryChange($event)">
+            <option value="">
+              {{ downloadPanelConfig.countryPlaceholder }}
+            </option>
+
+            <option
+              *ngFor="let country of countries"
+              [value]="country.value">
+              {{ country.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- <div class="download-form-field">
+          <label for="download-vendors">
+            {{ downloadPanelConfig.vendorLabel }}
+            <span>*</span>
+          </label>
+
+          <select
+            id="download-vendors"
+            multiple
+            [ngModel]="selectedVendors"
+            (ngModelChange)="selectedVendors = $event"
+            [disabled]="!selectedCountry">
+
+            <option
+              *ngFor="let vendor of vendors"
+              [value]="vendor.value">
+              {{ vendor.label }}
+            </option>
+          </select>
+
+          <small>{{ downloadPanelConfig.vendorHelp }}</small>
+        </div> -->
+      </ng-container>
+
+    </app-side-panel>
   </main>
 </div>

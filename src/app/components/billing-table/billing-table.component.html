@@ -1,189 +1,145 @@
-<div class="table-scroll mat-elevation-z0">
+<div class="table-scroll">
   <table
     mat-table
     [dataSource]="records"
     class="billing-mat-table"
     [attr.aria-label]="tableConfig.ariaLabel">
 
-    <!-- Selection -->
-    <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef class="check">
-        <mat-checkbox
-          [checked]="allSelected()"
-          [indeterminate]="someSelected()"
-          (change)="toggleAll()"
-          [aria-label]="tableConfig.selectAllLabel">
-        </mat-checkbox>
+    <ng-container
+      *ngFor="let column of columns"
+      [matColumnDef]="column.columnKey">
+
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        [ngClass]="column.headerClass || ''">
+
+        <ng-container
+          *ngTemplateOutlet="
+            headerTemplateRegistry[column.headerTemplateId || 'text'];
+            context: { column: column }
+          ">
+        </ng-container>
       </th>
 
-      <td mat-cell *matCellDef="let row" class="check">
-        <mat-checkbox
-          [checked]="isSelected(row.id)"
-          (change)="toggle(row)"
-          [attr.aria-label]="selectRowLabel(row)">
-        </mat-checkbox>
-      </td>
-    </ng-container>
-
-    <!-- Order Details -->
-    <ng-container matColumnDef="orderDetails">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[1].label }}
-      </th>
-      <td mat-cell *matCellDef="let row" class="order-cell">
-        <strong>{{ row.orderNumber }}</strong>
-        <span class="date">
-          {{ row.orderDate | date:tableConfig.dateFormat }}
-          &nbsp;
-          {{ row.orderTime }}
-        </span>
-      </td>
-    </ng-container>
-
-    <!-- Reseller Details -->
-    <ng-container matColumnDef="resellerDetails">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[2].label }}
-      </th>
-      <td mat-cell *matCellDef="let row" class="reseller">
-        <strong>{{ row.reseller }}</strong>
-        <span>{{ row.resellerId }}</span>
-      </td>
-    </ng-container>
-
-    <!-- Invoice ID -->
-    <ng-container matColumnDef="invoiceId">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[3].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.invoiceId }}
-      </td>
-    </ng-container>
-
-    <!-- Customer Type -->
-    <ng-container matColumnDef="customerType">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[4].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="erp">{{ tableConfig.erpLabel }}</span>
-        {{ row.customerType }}
-      </td>
-    </ng-container>
-
-    <!-- Country -->
-    <ng-container matColumnDef="country">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[5].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.country }}
-      </td>
-    </ng-container>
-
-    <!-- Currency -->
-    <ng-container matColumnDef="currency">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[6].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.currency }}
-      </td>
-    </ng-container>
-
-    <!-- Total VC -->
-    <ng-container matColumnDef="totalVc">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[7].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ money(row.totalVc) }}
-      </td>
-    </ng-container>
-
-    <!-- Total RP -->
-    <ng-container matColumnDef="totalRp">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ columns[8].label }}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ money(row.totalRp) }}
-      </td>
-    </ng-container>
-
-  <!-- Actions -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>
-      {{ columns[9].label }}
-    </th>
-
-  <td mat-cell *matCellDef="let row" class="actions">
-
-    <app-action-button
-      *ngFor="let item of rowActions"
-      variant="icon"
-      [label]="item.label"
-      [title]="item.title"
-      [ariaLabel]="item.ariaLabel"
-      [iconSrc]="item.iconSrc"
-      (clicked)="emitAction(item.type, row)">
-    </app-action-button>
-
-    <app-action-button
-      variant="icon"
-      [label]="tableConfig.moreActionsLabel"
-      [title]="tableConfig.moreActionsLabel"
-      [ariaLabel]="tableConfig.moreActionsLabel"
-      iconSrc="../../../assets/images/dots.svg"
-      [matMenuTriggerFor]="rowMenu"
-      (menuOpened)="setActiveRow(row)">
-    </app-action-button>
-
-  </td>
-</ng-container>
-
-    <!-- Table Rows -->
-    <tr
-      mat-header-row
-      *matHeaderRowDef="displayedColumns">
-    </tr>
-
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns">
-    </tr>
-
-    <!-- Empty State -->
-    <tr class="mat-row" *matNoDataRow>
       <td
-        class="mat-cell empty"
-        [attr.colspan]="displayedColumns.length">
+        mat-cell
+        *matCellDef="let row"
+        [ngClass]="column.cellClass || ''">
+
+        <ng-container
+          *ngTemplateOutlet="
+            cellTemplateRegistry[column.templateId];
+            context: {
+              $implicit: row,
+              column: column,
+              value: getColumnValues(row, column)
+            }
+          ">
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
         {{ tableConfig.emptyMessage }}
       </td>
     </tr>
   </table>
 </div>
 
-<!-- Row Actions Menu -->
-<mat-menu #rowMenu="matMenu" class="billing-row-menu">
-  <div mat-menu-item *ngFor="let item of menuActions" class="menu-action-item">
-    <app-action-button
-      variant="menu"
-      [label]="item.label"
-      [iconSrc]="item.iconSrc"
-      [ariaLabel]="item.label"
-      (clicked)="item.type === 'upload-csv'
-        ? uploadInput.click()
-        : emitActiveAction(item.type)">
-    </app-action-button>
-  </div>
+<mat-menu #rowMenu="matMenu">
+  <button
+    mat-menu-item
+    *ngFor="let item of menuActions"
+    type="button"
+    (click)="item.type === 'upload-csv'
+      ? uploadInput.click()
+      : emitActiveAction(item.type)">
+    <img [src]="item.iconSrc" alt="">
+    <span>{{ item.label }}</span>
+  </button>
 </mat-menu>
 
-<!-- CSV File Input -->
 <input
   #uploadInput
   class="hidden-upload"
   type="file"
   [accept]="tableConfig.csvAccept"
   (change)="emitActiveUpload($event)">
+
+<ng-template #textHeader let-column="column">
+  {{ column.columnName }}
+</ng-template>
+
+<ng-template #selectHeader>
+  <mat-checkbox
+    [checked]="allSelected()"
+    [indeterminate]="someSelected()"
+    (change)="toggleAll()"
+    [aria-label]="tableConfig.selectAllLabel">
+  </mat-checkbox>
+</ng-template>
+
+<ng-template #selectCell let-row>
+  <mat-checkbox
+    [checked]="isSelected(row.id)"
+    (change)="toggle(row)"
+    [attr.aria-label]="selectRowLabel(row)">
+  </mat-checkbox>
+</ng-template>
+
+<ng-template #textCell let-value="value">
+  {{ value[0] }}
+</ng-template>
+
+<ng-template #dateCell let-value="value" let-column="column">
+  {{ value[0] | date:(column.dateFormat || tableConfig.dateFormat) }}
+</ng-template>
+
+<ng-template #moneyCell let-value="value">
+  {{ money(value[0]) }}
+</ng-template>
+
+<ng-template #orderDetailsCell let-value="value">
+  <strong>{{ value[0] }}</strong>
+  <span class="date">
+    {{ value[1] | date:tableConfig.dateFormat }}
+    <ng-container *ngIf="value[2]">&nbsp;{{ value[2] }}</ng-container>
+  </span>
+</ng-template>
+
+<ng-template #resellerDetailsCell let-value="value">
+  <strong>{{ value[0] }}</strong>
+  <span>{{ value[1] }}</span>
+</ng-template>
+
+<ng-template #customerTypeCell let-value="value" let-column="column">
+  <span *ngIf="column.prefix" class="erp">{{ column.prefix }}</span>
+  {{ value[0] }}
+</ng-template>
+
+<ng-template #actionsCell let-row>
+  <app-action-button
+    *ngFor="let item of rowActions"
+    variant="icon"
+    [label]="item.label"
+    [title]="item.title || item.label"
+    [ariaLabel]="item.ariaLabel || item.label"
+    [iconSrc]="item.iconSrc"
+    (clicked)="emitAction(item.type, row)">
+  </app-action-button>
+
+  <app-action-button
+    variant="icon"
+    [label]="tableConfig.moreActionsLabel"
+    [title]="tableConfig.moreActionsLabel"
+    [ariaLabel]="tableConfig.moreActionsLabel"
+    [iconSrc]="tableConfig.moreActionsIconSrc"
+    [matMenuTriggerFor]="rowMenu"
+    (menuOpened)="setActiveRow(row)">
+  </app-action-button>
+</ng-template>

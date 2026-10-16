@@ -18,9 +18,10 @@ import { ActionButtonComponent } from './components/action-button/action-button.
 import { BillingTableComponent } from './components/billing-table/billing-table.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { HeaderComponent } from './components/header/header.component';
+import { SidePanelComponent } from './components/side-panal/side-panal.component';
 
 @NgModule({
-  declarations: [AppComponent, DateRangeComponent, SearchBarComponent, ActionButtonComponent, BillingTableComponent, PaginationComponent, HeaderComponent],
+  declarations: [AppComponent, DateRangeComponent, SearchBarComponent, ActionButtonComponent, BillingTableComponent, PaginationComponent, HeaderComponent, SidePanelComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule, FormsModule, HttpClientModule,
     MatTableModule, MatCheckboxModule, MatButtonModule, MatMenuModule,

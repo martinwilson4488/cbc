@@ -365,3 +365,7 @@ tr:hover td {
     display: flex;
     flex-direction: column;
 }
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background {
+    height: 14px;
+    width: 14px;
+}

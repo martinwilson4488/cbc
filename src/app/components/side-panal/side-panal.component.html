@@ -1,0 +1,46 @@
+<div class="panel-backdrop" *ngIf="visible" (click)="close()">
+  <aside
+    class="side-panel"
+    [style.width]="width"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title"
+    (click)="$event.stopPropagation()">
+
+    <header class="panel-header">
+      <h2>{{ title }}</h2>
+
+      <app-action-button
+        variant="icon"
+        label="Close"
+        iconSrc="../../assets/images/close.svg"
+        ariaLabel="Close panel"
+        (clicked)="close()">
+      </app-action-button>
+    </header>
+
+    <nav class="panel-tabs" *ngIf="tabs.length">
+      <app-action-button
+        *ngFor="let tab of tabs"
+        variant="outline"
+        [label]="tab.label"
+        [active]="activeTab === tab.id"
+        (clicked)="selectTab(tab.id)">
+      </app-action-button>
+    </nav>
+
+    <main class="panel-content">
+      <ng-content></ng-content>
+    </main>
+
+    <footer class="panel-footer" *ngIf="showFooter">
+      <app-action-button class="sub-btn"
+        variant="outline"
+        [label]="primaryActionLabel"
+        [disabled]="primaryActionDisabled"
+        (clicked)="submit()">
+      </app-action-button>
+    </footer>
+
+  </aside>
+</div>
