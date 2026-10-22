@@ -18,7 +18,7 @@
       <app-search-bar [placeholder]="uiConfig.searchPlaceholder" (searchChange)="onSearchChange($event)">
       </app-search-bar>
 
-            <app-action-button [label]="uiConfig.mapSkuButtonLabel" variant="link">
+      <app-action-button [label]="uiConfig.mapSkuButtonLabel" variant="link">
       </app-action-button>
     </section>
 
@@ -33,17 +33,14 @@
     <div class="toolbar">
       <div *ngIf="selectedIds.size > 0">
         <span>{{ selectedIds.size }} record(s) selected</span>
-              <app-action-button variant="link" label="Download Selected" (clicked)="downloadSelectedRecords()">
-      </app-action-button>
-      <app-action-button variant="link" label="Clear Selection" (clicked)="clearSelection()">
-      </app-action-button>
+        <app-action-button variant="link" label="Download Selected" (clicked)="downloadSelectedRecords()">
+        </app-action-button>
+        <app-action-button variant="link" label="Clear Selection" (clicked)="clearSelection()">
+        </app-action-button>
       </div>
       <div class="download">
-        <app-action-button
-          label="uiConfig.downloadButtonLabel"
-          iconSrc="../../assets/images/download.svg"
-          variant="icon"
-          ariaLabel="uiConfig.downloadButtonLabel" (clicked)="openDownloadPanel()">
+        <app-action-button label="uiConfig.downloadButtonLabel" iconSrc="../../assets/images/download.svg"
+          variant="icon" ariaLabel="uiConfig.downloadButtonLabel" (clicked)="openDownloadPanel()">
         </app-action-button>
       </div>
     </div>
@@ -60,7 +57,7 @@
     <app-pagination [currentPage]="currentPage" [pageSize]="pageSize" [totalItems]="filteredData.length"
       (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)">
     </app-pagination>
-   </main>
+  </main>
 </div>
 
 <!-- Download Side Panel -->
@@ -101,46 +98,41 @@
       {{ downloadPanelConfig.negativeChargesHelp }}
     </span>
 
-    <!-- Country -->
-    <div class="dropdown-holder d-flex flex-column">
-      <div class="title">
-        {{ downloadPanelConfig.countryLabel }}
-        <span class="mandatory-star">*</span>
-      </div>
-
-      <select id="download-country" class="form-control" formControlName="country">
-
-        <option value="">
-          {{ downloadPanelConfig.countryPlaceholder }}
-        </option>
-
-        <option *ngFor="let country of countryOptions" [value]="country.value">
-
-          {{ country.label }}
-
-        </option>
-      </select>
-    </div>
-
-    <!-- Vendor -->
-    <div class="dropdown-holder d-flex flex-column">
-      <div class="title">
-        {{ downloadPanelConfig.vendorLabel }}
-        <span class="mandatory-star">*</span>
-      </div>
-
-      <select id="download-vendor" class="form-control" formControlName="vendor">
-
-        <option value="">
-          {{ downloadPanelConfig.vendorPlaceholder }}
-        </option>
-
-        <option *ngFor="let vendor of vendorOptions" [value]="vendor.value">
-          {{ vendor.label }}
-
-        </option>
-      </select>
-    </div>
+    <ng-container *ngFor="let control of controlOptions">
+      <ng-container *ngTemplateOutlet="filterDropdown; context: {
+          label: control.label,
+          placeholder: control.value === controlOptions[0].value
+            ? downloadPanelConfig.countryPlaceholder
+            : downloadPanelConfig.vendorPlaceholder,
+          controlName: control.value,
+          options: control.value === controlOptions[0].value
+            ? countryOptions
+            : vendorOptions,
+          elementId: 'download-' + control.value
+        }">
+      </ng-container>
+    </ng-container>
 
   </form>
+</ng-template>
+
+<ng-template #filterDropdown let-label="label" let-placeholder="placeholder" let-controlName="controlName"
+  let-options="options" let-elementId="elementId">
+
+  <div class="dropdown-holder d-flex flex-column">
+    <div class="title">
+      {{ label }}
+      <span class="mandatory-star">*</span>
+    </div>
+
+    <select [id]="elementId" class="form-control" [formControlName]="controlName">
+
+      <option value="">{{ placeholder }}</option>
+
+      <option *ngFor="let option of options" [value]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
+
 </ng-template>

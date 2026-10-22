@@ -86,6 +86,11 @@ uiConfig = {
     { label: 'Vendor B', value: 'Vendor B' },
     { label: 'Vendor C', value: 'Vendor C' }
   ];
+  
+  controlOptions: SelectOption[] = [
+    { label: 'Country', value: 'country' },
+    { label: 'Vendor', value: 'vendor' }
+  ];
 
   // Billing data
   billingData: BillingRecord[] = [];
@@ -160,7 +165,7 @@ uiConfig = {
           this.applyFilters();
         },
         error: error => {
-          console.error('Unable to load billing data: - app.component.ts:163', error);
+          console.error('Unable to load billing data: - app.component.ts:168', error);
           this.billingData = [];
           this.applyFilters();
         }
@@ -334,7 +339,7 @@ uiConfig = {
     }
 
     if (records.length === 0) {
-      console.warn('No records found for the selected criteria. - app.component.ts:337');
+      console.warn('No records found for the selected criteria. - app.component.ts:342');
       return;
     }
 
