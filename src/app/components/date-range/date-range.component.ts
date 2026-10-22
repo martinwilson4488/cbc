@@ -1,3 +1,4 @@
+
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
@@ -6,32 +7,42 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./date-range.component.css']
 })
 export class DateRangeComponent {
-  @Output() rangeChange = new EventEmitter<{ start: string; end: string }>();
 
-  // Empty by default so the table shows all records on initial load.
+  @Output() dateRangeChange = new EventEmitter<{
+    startDate: string;
+    endDate: string;
+  }>();
+
+  // Empty by default; no date filter is applied initially.
   start: Date | null = null;
   end: Date | null = null;
 
   onFromChange(value: Date | null): void {
     this.start = value;
+
+    // Reset the end date if it is earlier than the start date.
     if (this.start && this.end && this.start > this.end) {
       this.end = null;
     }
+
     this.emitRange();
   }
 
   onToChange(value: Date | null): void {
     this.end = value;
+
+    // Keep the date range valid.
     if (this.start && this.end && this.end < this.start) {
       this.start = this.end;
     }
+
     this.emitRange();
   }
 
   private emitRange(): void {
-    this.rangeChange.emit({
-      start: this.start ? this.toDateKey(this.start) : '',
-      end: this.end ? this.toDateKey(this.end) : ''
+    this.dateRangeChange.emit({
+      startDate: this.start ? this.toDateKey(this.start) : '',
+      endDate: this.end ? this.toDateKey(this.end) : ''
     });
   }
 
@@ -39,6 +50,7 @@ export class DateRangeComponent {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
+
     return `${year}-${month}-${day}`;
   }
 }

@@ -69,7 +69,7 @@
     flex: 1
 }
 
-.filters-row app-action-button {
+.search-row app-search-bar,.filters-row app-action-button {
     margin-left: auto
 }
 
@@ -77,7 +77,7 @@
     flex: 1
 }
 
-.search-row app-action-button {
+.search-row app-search-bar {
     width: 95px
 }
 
@@ -89,6 +89,7 @@
     height: 44px;
     align-items: end;
     background: #EBEEEF;
+    position: relative;
 }
 
 .tabs button {
@@ -108,14 +109,16 @@
 }
 
 .toolbar {
-    height: 30px;
+    height: 40px;
     display: flex;
     align-items: center;
-    padding: 0 18px;
+    padding: 5px 18px;
     border-bottom: 1px solid #dbe3e7;
     position: relative;
 }
-
+.toolbar span {
+    font-size: 12px;
+}
 .toolbar-spacer {
     flex: 1
 }
@@ -128,7 +131,7 @@
     cursor: pointer;
     position: absolute;
     right: 10px;
-    top: -30px;
+    top: -40px;
 }
 
 .selection {
@@ -175,6 +178,24 @@ label {
     font-weight: 400;
     line-height: 150%;
     color: #262626;
+}
+.dropdown-holder .title {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #262626;
+    margin-bottom: 10px;
+}
+.dropdown-holder select {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #262626;
+    width: 100%;
+    margin-bottom: 10px;
+    height: 48px;
+    padding: 8px;
+    border: 1px solid #E4E5E6;
 }
 @media(max-width:900px) {
     .content {

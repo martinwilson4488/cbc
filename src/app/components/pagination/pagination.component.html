@@ -11,8 +11,8 @@
       title="Previous page"
       ariaLabel="Previous page"
       iconSrc="assets/images/left-arrow.svg"
-      [disabled]="page === 1"
-      (clicked)="goTo(page - 1)">
+      [disabled]="currentPage === 1"
+      (clicked)="goTo(currentPage - 1)">
     </app-action-button>
 
     <!-- Page numbers -->
@@ -25,8 +25,8 @@
         [label]="p.toString()"
         [title]="'Page ' + p"
         [ariaLabel]="'Go to page ' + p"
-        [active]="p === page"
-        [disabled]="p === page"
+        [active]="p === currentPage"
+        [disabled]="p === currentPage"
         (clicked)="goTo(p)">
       </app-action-button>
     </ng-container>
@@ -38,8 +38,8 @@
       title="Next page"
       ariaLabel="Next page"
       iconSrc="assets/images/right-arrow.svg"
-      [disabled]="page >= totalPages"
-      (clicked)="goTo(page + 1)">
+      [disabled]="currentPage >= totalPages"
+      (clicked)="goTo(currentPage + 1)">
     </app-action-button>
   </div>
 

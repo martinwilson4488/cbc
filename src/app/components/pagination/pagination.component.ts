@@ -6,12 +6,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent {
-  @Input() totalItems = 0;
-  @Input() pageSize = 10;
-  @Input() page = 1;
+@Input() currentPage = 1;
+@Input() pageSize = 10;
+@Input() totalItems = 0;
 
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() pageSizeChange = new EventEmitter<number>();
+@Output() pageChange = new EventEmitter<number>();
+@Output() pageSizeChange = new EventEmitter<number>();
 
   readonly pageSizes = [5, 10, 20, 50];
 
@@ -22,11 +22,11 @@ export class PaginationComponent {
   get startItem(): number {
     return this.totalItems === 0
       ? 0
-      : (this.page - 1) * this.pageSize + 1;
+      : (this.currentPage - 1) * this.pageSize + 1;
   }
 
   get endItem(): number {
-    return Math.min(this.totalItems, this.page * this.pageSize);
+    return Math.min(this.totalItems, this.currentPage * this.pageSize);
   }
 
   get pages(): number[] {
@@ -41,8 +41,8 @@ export class PaginationComponent {
 
     const result: number[] = [1];
 
-    const from = Math.max(2, this.page - 2);
-    const to = Math.min(this.totalPages - 1, this.page + 2);
+    const from = Math.max(2, this.currentPage - 2);
+    const to = Math.min(this.totalPages - 1, this.currentPage + 2);
 
     if (from > 2) {
       result.push(-1);
@@ -65,7 +65,7 @@ export class PaginationComponent {
     if (
       pageNumber >= 1 &&
       pageNumber <= this.totalPages &&
-      pageNumber !== this.page
+      pageNumber !== this.currentPage
     ) {
       this.pageChange.emit(pageNumber);
     }

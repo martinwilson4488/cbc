@@ -1,3 +1,4 @@
+
 import {
   Component,
   EventEmitter,
@@ -6,7 +7,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
+
 import { BillingRecord } from '../../models/billing.model';
+
 
 export interface BillingTableColumn {
   columnName: string;
@@ -33,7 +36,6 @@ export interface BillingTableAction {
   ariaLabel?: string;
 }
 
-/** Column definitions are kept in TypeScript so the table markup stays reusable. */
 export const COMMON_BILLING_COLUMNS: BillingTableColumn[] = [
   {
     columnName: 'Select',
@@ -122,28 +124,54 @@ export const COMMON_BILLING_COLUMNS: BillingTableColumn[] = [
   styleUrls: ['./billing-table.component.css']
 })
 export class BillingTableComponent {
-  @Input() records: BillingRecord[] = [];
-  @Input() selectedIds = new Set<number>();
 
-  @Output() selectedIdsChange = new EventEmitter<Set<number>>();
+  // Inputs used by the parent component
+  @Input() data: BillingRecord[] = [];  
+  @Input() selectedIds = new Set<number | string>();
+
+  // Output used by the parent component
+  @Output() selectionChange =
+    new EventEmitter<Set<number | string>>();
+
   @Output() action = new EventEmitter<{
     type: string;
     record: BillingRecord;
     file?: File;
   }>();
 
-  @ViewChild('textHeader', { static: true }) textHeader!: TemplateRef<unknown>;
-  @ViewChild('selectHeader', { static: true }) selectHeader!: TemplateRef<unknown>;
-  @ViewChild('selectCell', { static: true }) selectCell!: TemplateRef<unknown>;
-  @ViewChild('textCell', { static: true }) textCell!: TemplateRef<unknown>;
-  @ViewChild('dateCell', { static: true }) dateCell!: TemplateRef<unknown>;
-  @ViewChild('moneyCell', { static: true }) moneyCell!: TemplateRef<unknown>;
-  @ViewChild('orderDetailsCell', { static: true }) orderDetailsCell!: TemplateRef<unknown>;
-  @ViewChild('resellerDetailsCell', { static: true }) resellerDetailsCell!: TemplateRef<unknown>;
-  @ViewChild('customerTypeCell', { static: true }) customerTypeCell!: TemplateRef<unknown>;
-  @ViewChild('actionsCell', { static: true }) actionsCell!: TemplateRef<unknown>;
+  @ViewChild('textHeader', { static: true })
+  textHeader!: TemplateRef<unknown>;
 
-  columns: BillingTableColumn[] = [...COMMON_BILLING_COLUMNS];
+  @ViewChild('selectHeader', { static: true })
+  selectHeader!: TemplateRef<unknown>;
+
+  @ViewChild('selectCell', { static: true })
+  selectCell!: TemplateRef<unknown>;
+
+  @ViewChild('textCell', { static: true })
+  textCell!: TemplateRef<unknown>;
+
+  @ViewChild('dateCell', { static: true })
+  dateCell!: TemplateRef<unknown>;
+
+  @ViewChild('moneyCell', { static: true })
+  moneyCell!: TemplateRef<unknown>;
+
+  @ViewChild('orderDetailsCell', { static: true })
+  orderDetailsCell!: TemplateRef<unknown>;
+
+  @ViewChild('resellerDetailsCell', { static: true })
+  resellerDetailsCell!: TemplateRef<unknown>;
+
+  @ViewChild('customerTypeCell', { static: true })
+  customerTypeCell!: TemplateRef<unknown>;
+
+  @ViewChild('actionsCell', { static: true })
+  actionsCell!: TemplateRef<unknown>;
+
+  columns: BillingTableColumn[] = [
+    ...COMMON_BILLING_COLUMNS
+  ];
 
   tableConfig = {
     ariaLabel: 'Billing records',
@@ -190,18 +218,23 @@ export class BillingTableComponent {
 
   get displayedColumns(): string[] {
     return [...this.columns]
-      .sort((first, second) => first.positionOrder - second.positionOrder)
+      .sort(
+        (first, second) =>
+          first.positionOrder - second.positionOrder
+      )
       .map(column => column.columnKey);
   }
 
-  get headerTemplateRegistry(): Record<string, TemplateRef<unknown>> {
+  get headerTemplateRegistry():
+    Record<string, TemplateRef<unknown>> {
     return {
       text: this.textHeader,
       select: this.selectHeader
     };
   }
 
-  get cellTemplateRegistry(): Record<string, TemplateRef<unknown>> {
+  get cellTemplateRegistry():
+    Record<string, TemplateRef<unknown>> {
     return {
       select: this.selectCell,
       text: this.textCell,
@@ -214,22 +247,34 @@ export class BillingTableComponent {
     };
   }
 
-  getColumnValues(record: BillingRecord, column: BillingTableColumn): any[] {
-    const field = column.field || column.key || column.columnKey;
+  getColumnValues(
+    record: BillingRecord,
+    column: BillingTableColumn
+  ): any[] {
+    const field =
+      column.field || column.key || column.columnKey;
+
     const primaryValue = this.getValue(record, field);
 
     if (column.templateId === 'orderDetails') {
       return [
         primaryValue,
-        this.getValue(record, column.dateField || 'orderDate'),
-        column.timeField ? this.getValue(record, column.timeField) : undefined
+        this.getValue(
+          record,
+          column.dateField || 'orderDate'
+        ),
+        column.timeField
+          ? this.getValue(record, column.timeField)
+          : undefined
       ];
     }
 
     if (column.templateId === 'resellerDetails') {
       return [
         primaryValue,
-        column.secondaryField ? this.getValue(record, column.secondaryField) : undefined
+        column.secondaryField
+          ? this.getValue(record, column.secondaryField)
+          : undefined
       ];
     }
 
@@ -238,12 +283,13 @@ export class BillingTableComponent {
 
   getValue(record: unknown, path: string): any {
     return path.split('.').reduce<any>(
-      (value, key) => value == null ? undefined : value[key],
+      (value, key) =>
+        value == null ? undefined : value[key],
       record
     );
   }
 
-  isSelected(id: number): boolean {
+  isSelected(id: number | string): boolean {
     return this.selectedIds.has(id);
   }
 
@@ -256,14 +302,15 @@ export class BillingTableComponent {
       nextSelection.add(record.id);
     }
 
-    this.selectedIdsChange.emit(nextSelection);
+    this.selectedIds = nextSelection;
+    this.selectionChange.emit(nextSelection);
   }
 
   toggleAll(): void {
     const nextSelection = new Set(this.selectedIds);
     const shouldDeselect = this.allSelected();
 
-    this.records.forEach(record => {
+    this.data.forEach(record => {
       if (shouldDeselect) {
         nextSelection.delete(record.id);
       } else {
@@ -271,17 +318,21 @@ export class BillingTableComponent {
       }
     });
 
-    this.selectedIdsChange.emit(nextSelection);
+    this.selectedIds = nextSelection;
+    this.selectionChange.emit(nextSelection);
   }
 
   allSelected(): boolean {
-    return this.records.length > 0 &&
-      this.records.every(record => this.selectedIds.has(record.id));
+    return this.data.length > 0 &&
+      this.data.every(
+        record => this.selectedIds.has(record.id)
+      );
   }
 
   someSelected(): boolean {
-    return this.records.some(record => this.selectedIds.has(record.id)) &&
-      !this.allSelected();
+    return this.data.some(
+      record => this.selectedIds.has(record.id)
+    ) && !this.allSelected();
   }
 
   selectRowLabel(record: BillingRecord): string {
@@ -292,13 +343,19 @@ export class BillingTableComponent {
     this.activeRecord = record;
   }
 
-  emitAction(type: string, record: BillingRecord): void {
+  emitAction(
+    type: string,
+    record: BillingRecord
+  ): void {
     this.action.emit({ type, record });
   }
 
   emitActiveAction(type: string): void {
     if (this.activeRecord) {
-      this.action.emit({ type, record: this.activeRecord });
+      this.action.emit({
+        type,
+        record: this.activeRecord
+      });
     }
   }
 
@@ -307,7 +364,11 @@ export class BillingTableComponent {
     const file = input.files?.[0];
 
     if (this.activeRecord && file) {
-      this.action.emit({ type: 'upload-csv', record: this.activeRecord, file });
+      this.action.emit({
+        type: 'upload-csv',
+        record: this.activeRecord,
+        file
+      });
     }
 
     input.value = '';
@@ -315,6 +376,14 @@ export class BillingTableComponent {
 
   money(value: unknown): string {
     const amount = Number(value ?? 0);
-    return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
+
+    return Number.isFinite(amount)
+      ? amount.toFixed(2)
+      : '0.00';
+  }
+
+  clearSelection(): void {
+    this.selectedIds = new Set<number | string>();
+    this.selectionChange.emit(this.selectedIds);
   }
 }

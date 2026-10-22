@@ -1,5 +1,5 @@
 export interface BillingRecord {
-  id: number;
+  id: number | string;
   orderNumber: string;
   orderDate: string;
   orderTime: string;
@@ -12,6 +12,9 @@ export interface BillingRecord {
   currency: string;
   totalVc: number;
   totalRp: number;
-  status: 'Billing List' | 'Approved' | 'Completed' | 'Declined';
+  status: string;
   hasError: boolean;
+  vendor?: string;
+  charge?: number | string;
+  [key: string]: any;
 }

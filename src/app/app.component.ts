@@ -1,14 +1,43 @@
+
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BillingRecord } from './models/billing.model';
-import { SidePanelTab } from './components/side-panal/side-panal.component';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 
-interface SelectOption {
+export interface SelectOption {
   label: string;
   value: string;
 }
 
-interface DownloadStatus extends SelectOption {}
+export interface DownloadTabConfig {
+  id: string;
+  label: string;
+  templateType: 'statuses' | 'negativeCharges';
+}
+
+export interface BillingRecord {
+  id: number | string;
+  orderNumber: string;
+  orderDate: string;
+  orderTime: string;
+  alertCount: number;
+  reseller: string;
+  resellerId: string;
+  invoiceId: string;
+  customerType: string;
+  country: string;
+  currency: string;
+  totalVc: number;
+  totalRp: number;
+  status: string;
+  hasError: boolean;
+  vendor?: string;
+  charge?: number | string;
+  [key: string]: any;
+}
 
 @Component({
   selector: 'app-root',
@@ -16,274 +45,370 @@ interface DownloadStatus extends SelectOption {}
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  // Billing data
-  allRecords: BillingRecord[] = [];
-  filteredRecords: BillingRecord[] = [];
-  visibleRecords: BillingRecord[] = [];
-
-  selectedIds = new Set<number>();
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder
+  ) {}
 
   // Page configuration
-  readonly uiConfig = {
-    filtersButtonLabel: 'Add Filters',
-    filtersButtonVariant: 'outline' as const,
-    mapSkuButtonLabel: 'Map SKU',
-    mapSkuButtonVariant: 'link' as const,
-    downloadButtonLabel: 'Download',
-    downloadButtonVariant: 'icon' as const,
-    downloadIcon: 'assets/images/download.svg',
-    selectedLabel: 'selected',
-    clearLabel: 'Clear'
-  };
+uiConfig = {
+  pageTitle: 'Cloud Billing',
+  downloadButtonLabel: 'Download CSV',
+  searchPlaceholder: 'Search billing records',
+  noRecordsMessage: 'No records found.',
 
-  // Billing tabs
-  readonly billingTabs: SelectOption[] = [
-    { label: 'Billing List', value: 'Billing List' },
-    { label: 'Approved', value: 'Approved' },
-    { label: 'Completed', value: 'Completed' },
-    { label: 'Declined', value: 'Declined' }
-  ];
+  filtersButtonLabel: 'Filters',
+  filtersButtonVariant: 'outline',
 
-  activeTab: BillingRecord['status'] = 'Billing List';
-
-  // Search and date filters
-  searchTerm = '';
-  startDate = '';
-  endDate = '';
-
-  // Pagination
-  page = 1;
-  pageSize = 10;
+  mapSkuButtonLabel: 'Map SKU',
+  mapSkuButtonVariant: 'outline'
+};
 
   // Download panel configuration
-  isDownloadPanelOpen = false;
-  activeDownloadTab = 'all';
-
-  readonly downloadPanelConfig = {
-    title: 'Download',
-    actionLabel: 'Download',
+  downloadPanelConfig = {
+    title: 'Download CSV',
+    primaryActionLabel: 'Download',
+    negativeChargesHelp:
+      'Please select one country and one vendor to download negative charges data.',
     countryLabel: 'Country',
     countryPlaceholder: 'Choose Country',
     vendorLabel: 'Vendor',
     vendorPlaceholder: 'Choose Vendor',
-    vendorHelp: 'Select one or more vendors.',
-    negativeChargesHelp:
-      'Please select only one country and one or more vendor(s) to download the negative charges data.',
     tabs: [
-      { id: 'all', label: 'All' },
-      { id: 'negative-charges', label: 'Negative Charges' }
-    ] as SidePanelTab[]
+      {
+        id: 'all',
+        label: 'All',
+        templateType: 'statuses'
+      },
+      {
+        id: 'negative-charges',
+        label: 'Negative Charges',
+        templateType: 'negativeCharges'
+      }
+    ] as DownloadTabConfig[]
   };
 
-  readonly availableStatuses: DownloadStatus[] = [
+  // Billing tabs
+  billingTabs: SelectOption[] = [
     { label: 'Pending List', value: 'Billing List' },
     { label: 'Approved', value: 'Approved' },
     { label: 'Declined', value: 'Declined' },
     { label: 'Completed', value: 'Completed' }
   ];
 
-  // Replace these sample options with values returned by your API.
-  countries: SelectOption[] = [
-    { label: 'India', value: 'India' },
-    { label: 'United States', value: 'United States' },
-    { label: 'United Kingdom', value: 'United Kingdom' }
+  // Status options for CSV download
+  availableStatuses: SelectOption[] = [
+    { label: 'Pending List', value: 'Billing List' },
+    { label: 'Approved', value: 'Approved' },
+    { label: 'Declined', value: 'Declined' },
+    { label: 'Completed', value: 'Completed' }
   ];
 
-  vendors: SelectOption[] = [
+  // Sample options; replace with actual application data if available
+  countryOptions: SelectOption[] = [
+    { label: 'United States', value: 'US' },
+    { label: 'United Kingdom', value: 'UK' },
+    { label: 'India', value: 'IN' }
+  ];
+
+  vendorOptions: SelectOption[] = [
     { label: 'Vendor A', value: 'Vendor A' },
     { label: 'Vendor B', value: 'Vendor B' },
     { label: 'Vendor C', value: 'Vendor C' }
   ];
 
-  selectedStatuses = new Set<string>();
-  selectedCountry = '';
-  selectedVendors: string[] = [];
+  // Billing data
+  billingData: BillingRecord[] = [];
+  filteredData: BillingRecord[] = [];
+  paginatedData: BillingRecord[] = [];
 
-  constructor(private http: HttpClient) {}
+  // Filters
+  activeTab = 'Billing List';
+  searchText = '';
+  startDate = '';
+  endDate = '';
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
+
+  // Must match BillingTableComponent's Set-based selection
+  selectedIds = new Set<number | string>();
+
+  // Download panel state
+  downloadPanelVisible = false;
+  activeDownloadTab = '';
+  selectedStatuses = new Set<string>();
+
+  // Single-select country and vendor form
+  negativeChargesForm: FormGroup = this.fb.group({
+    country: ['', Validators.required],
+    vendor: ['', Validators.required]
+  });
+
+  // Resolve active panel content from configuration
+  get activeDownloadTabConfig(): DownloadTabConfig | undefined {
+    return this.downloadPanelConfig.tabs.find(
+      tab => tab.id === this.activeDownloadTab
+    );
+  }
+
+  // Enable download based on the selected content type
+  get canDownload(): boolean {
+    const config = this.activeDownloadTabConfig;
+
+    if (!config) {
+      return false;
+    }
+
+    switch (config.templateType) {
+      case 'statuses':
+        return this.selectedStatuses.size > 0;
+
+      case 'negativeCharges':
+        return this.negativeChargesForm.valid;
+
+      default:
+        return false;
+    }
+  }
 
   ngOnInit(): void {
+    this.activeDownloadTab =
+      this.downloadPanelConfig.tabs[0]?.id ?? '';
+
+    this.loadBillingData();
+  }
+
+  // Load billing data
+  loadBillingData(): void {
     this.http
       .get<BillingRecord[]>('assets/billing-data.json')
       .subscribe({
         next: data => {
-          this.allRecords = data;
+          this.billingData = data;
           this.applyFilters();
         },
         error: error => {
-          console.error('Failed to load billing records: - app.component.ts:113', error);
-          this.allRecords = [];
+          console.error('Unable to load billing data: - app.component.ts:193', error);
+          this.billingData = [];
           this.applyFilters();
         }
       });
   }
 
-  get selectedCount(): number {
-    return this.selectedIds.size;
-  }
-
-  get allStatusesSelected(): boolean {
-    return this.availableStatuses.length > 0 &&
-      this.availableStatuses.every(status =>
-        this.selectedStatuses.has(status.value)
-      );
-  }
-
-  get someStatusesSelected(): boolean {
-    return this.selectedStatuses.size > 0 &&
-      !this.allStatusesSelected;
-  }
-
-  get canDownload(): boolean {
-    if (this.activeDownloadTab === 'all') {
-      return this.selectedStatuses.size > 0;
-    }
-
-    return !!this.selectedCountry &&
-      this.selectedVendors.length > 0;
-  }
-
-  // Selection
-  onSelectedIdsChange(ids: Set<number>): void {
-    this.selectedIds = new Set(ids);
-  }
-
-  clearSelection(): void {
-    this.selectedIds = new Set<number>();
-  }
-
-  // Billing tabs
-  setTab(tab: string): void {
-    this.activeTab = tab as BillingRecord['status'];
-    this.page = 1;
+  // Billing tab selection
+  setTab(status: string): void {
+    this.activeTab = status;
+    this.currentPage = 1;
     this.clearSelection();
     this.applyFilters();
   }
 
   // Search
-  onSearch(term: string): void {
-    this.searchTerm = term;
-    this.page = 1;
+  onSearchChange(value: string): void {
+    this.searchText = value;
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   // Date range
-  onDateRange(range: { start: string; end: string }): void {
-    this.startDate = range.start;
-    this.endDate = range.end;
-    this.page = 1;
+  onDateRangeChange(range: {
+    startDate: string;
+    endDate: string;
+  }): void {
+    this.startDate = range.startDate;
+    this.endDate = range.endDate;
+    this.currentPage = 1;
     this.applyFilters();
   }
 
-  // Apply billing tab, search, and date filters
+  // Apply billing filters
   applyFilters(): void {
-    const search = this.searchTerm.trim().toLowerCase();
+    let result = [...this.billingData];
 
-    this.filteredRecords = this.allRecords.filter(row => {
-      const matchesTab = row.status === this.activeTab;
+    result = result.filter(
+      record => record.status === this.activeTab
+    );
 
-      const matchesSearch =
-        !search ||
-        Object.values(row).some(value =>
+    if (this.searchText.trim()) {
+      const search = this.searchText.toLowerCase();
+
+      result = result.filter(record =>
+        Object.values(record).some(value =>
           String(value ?? '').toLowerCase().includes(search)
-        );
+        )
+      );
+    }
 
-      const matchesDate =
-        (!this.startDate || row.orderDate >= this.startDate) &&
-        (!this.endDate || row.orderDate <= this.endDate);
+    if (this.startDate) {
+      result = result.filter(
+        record =>
+          !!record.orderDate &&
+          record.orderDate >= this.startDate
+      );
+    }
 
-      return matchesTab && matchesSearch && matchesDate;
-    });
+    if (this.endDate) {
+      result = result.filter(
+        record =>
+          !!record.orderDate &&
+          record.orderDate <= this.endDate
+      );
+    }
 
-    this.refreshPage();
+    this.filteredData = result;
+    this.updatePagination();
   }
 
   // Pagination
-  refreshPage(): void {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(this.filteredRecords.length / this.pageSize)
-    );
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
 
-    if (this.page > totalPages) {
-      this.page = totalPages;
-    }
-
-    const start = (this.page - 1) * this.pageSize;
-
-    this.visibleRecords = this.filteredRecords.slice(
-      start,
-      start + this.pageSize
+    this.paginatedData = this.filteredData.slice(
+      startIndex,
+      startIndex + this.pageSize
     );
   }
 
-  changePage(page: number): void {
-    this.page = page;
-    this.refreshPage();
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updatePagination();
   }
 
-  changePageSize(size: number): void {
+  onPageSizeChange(size: number): void {
     this.pageSize = size;
-    this.page = 1;
-    this.refreshPage();
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
-  // Download panel
+  // Table selection
+  onSelectionChange(ids: Set<number | string>): void {
+    this.selectedIds = new Set(ids);
+  }
+
+  clearSelection(): void {
+    this.selectedIds = new Set<number | string>();
+  }
+
+  // Download panel controls
   openDownloadPanel(): void {
-    this.isDownloadPanelOpen = true;
+    this.downloadPanelVisible = true;
   }
 
   closeDownloadPanel(): void {
-    this.isDownloadPanelOpen = false;
+    this.downloadPanelVisible = false;
   }
 
   onDownloadTabChange(tabId: string): void {
     this.activeDownloadTab = tabId;
   }
 
-  // Status checkboxes
-  toggleStatus(value: string, checked: boolean): void {
-    const updated = new Set(this.selectedStatuses);
+  // Status checkbox selection
+  toggleStatus(status: string, checked: boolean): void {
+    const nextStatuses = new Set(this.selectedStatuses);
 
     if (checked) {
-      updated.add(value);
+      nextStatuses.add(status);
     } else {
-      updated.delete(value);
+      nextStatuses.delete(status);
     }
 
-    this.selectedStatuses = updated;
+    this.selectedStatuses = nextStatuses;
   }
 
-  toggleAllStatuses(checked: boolean): void {
-    this.selectedStatuses = checked
-      ? new Set(this.availableStatuses.map(status => status.value))
-      : new Set<string>();
-  }
-
-  // Country and vendor selection
-  onCountryChange(country: string): void {
-    this.selectedCountry = country;
-    this.selectedVendors = [];
-  }
-
-  // Download action
-  downloadSelectedStatuses(): void {
-    if (!this.canDownload) {
+  // Download selected table records
+  downloadSelectedRecords(): void {
+    if (this.selectedIds.size === 0) {
       return;
     }
 
-    if (this.activeDownloadTab === 'all') {
-      const recordsToDownload = this.allRecords.filter(record =>
-        this.selectedStatuses.has(String(record.status))
-      );
+    const records = this.billingData.filter(record =>
+      this.selectedIds.has(record.id)
+    );
 
-      // Connect recordsToDownload to your existing CSV export service.
-      console.log('Records selected for export: - app.component.ts:280', recordsToDownload);
-    } else {
-      // Connect these selections to your negative charges export service.
-      console.log('Selected country: - app.component.ts:283', this.selectedCountry);
-      console.log('Selected vendors: - app.component.ts:284', this.selectedVendors);
+    this.exportCsv(records, 'selected-billing-records.csv');
+  }
+
+  // Download records for the active panel content
+  downloadSelectedStatuses(): void {
+    const config = this.activeDownloadTabConfig;
+
+    if (!config || !this.canDownload) {
+      return;
     }
 
+    let records: BillingRecord[] = [];
+
+    switch (config.templateType) {
+      case 'statuses':
+        records = this.billingData.filter(record =>
+          this.selectedStatuses.has(record.status)
+        );
+        break;
+
+      case 'negativeCharges': {
+        const country =
+          this.negativeChargesForm.get('country')?.value;
+
+        const vendor =
+          this.negativeChargesForm.get('vendor')?.value;
+
+        records = this.billingData.filter(record =>
+          record.country === country &&
+          record.vendor === vendor &&
+          Number(record.charge) < 0
+        );
+        break;
+      }
+    }
+
+    if (records.length === 0) {
+      console.warn('No records found for the selected criteria. - app.component.ts:367');
+      return;
+    }
+
+    this.exportCsv(records, 'billing-export.csv');
     this.closeDownloadPanel();
+  }
+
+  // CSV export
+  private exportCsv(
+    records: BillingRecord[],
+    filename: string
+  ): void {
+    if (records.length === 0) {
+      return;
+    }
+
+    const headers = Object.keys(records[0]);
+
+    const escapeCsvValue = (value: unknown): string => {
+      const text = String(value ?? '');
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+
+    const csvRows = [
+      headers.map(escapeCsvValue).join(','),
+      ...records.map(record =>
+        headers
+          .map(header => escapeCsvValue(record[header]))
+          .join(',')
+      )
+    ];
+
+    const blob = new Blob(
+      ['\uFEFF' + csvRows.join('\r\n')],
+      { type: 'text/csv;charset=utf-8;' }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+
+    URL.revokeObjectURL(url);
   }
 }

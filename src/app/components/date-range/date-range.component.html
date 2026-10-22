@@ -1,23 +1,48 @@
+
 <div class="date-range-picker">
   <span class="label">Date Range</span>
 
+  <!-- Start Date -->
   <mat-form-field appearance="outline" class="date-field">
     <mat-label>From</mat-label>
-    <input matInput [matDatepicker]="fromPicker" [max]="end || null"
-           [(ngModel)]="start" (dateChange)="onFromChange($event.value)"
-           placeholder="Select start date" aria-label="From date">
-    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+
+    <input
+      matInput
+      [matDatepicker]="fromPicker"
+      [max]="end"
+      [(ngModel)]="start"
+      (dateChange)="onFromChange($event.value)"
+      placeholder="Select start date"
+      aria-label="From date">
+
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="fromPicker">
+    </mat-datepicker-toggle>
+
     <mat-datepicker #fromPicker></mat-datepicker>
   </mat-form-field>
 
   <span class="to-separator">to</span>
 
+  <!-- End Date -->
   <mat-form-field appearance="outline" class="date-field">
     <mat-label>To</mat-label>
-    <input matInput [matDatepicker]="toPicker" [min]="start || null"
-           [(ngModel)]="end" (dateChange)="onToChange($event.value)"
-           placeholder="Select end date" aria-label="To date">
-    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+
+    <input
+      matInput
+      [matDatepicker]="toPicker"
+      [min]="start"
+      [(ngModel)]="end"
+      (dateChange)="onToChange($event.value)"
+      placeholder="Select end date"
+      aria-label="To date">
+
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="toPicker">
+    </mat-datepicker-toggle>
+
     <mat-datepicker #toPicker></mat-datepicker>
   </mat-form-field>
 </div>
