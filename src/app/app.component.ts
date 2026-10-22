@@ -7,18 +7,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { BillingRecord } from './models/billing.model';
-
-export interface SelectOption {
-  label: string;
-  value: string;
-}
-
-export interface DownloadTabConfig {
-  id: string;
-  label: string;
-  templateType: 'statuses' | 'negativeCharges';
-}
+import { BillingRecord, SelectOption, DownloadTabConfig } from '../app/interface/cbc.Interfrace';
 
 @Component({
   selector: 'app-root',
@@ -171,7 +160,7 @@ uiConfig = {
           this.applyFilters();
         },
         error: error => {
-          console.error('Unable to load billing data: - app.component.ts:174', error);
+          console.error('Unable to load billing data: - app.component.ts:163', error);
           this.billingData = [];
           this.applyFilters();
         }
@@ -345,7 +334,7 @@ uiConfig = {
     }
 
     if (records.length === 0) {
-      console.warn('No records found for the selected criteria. - app.component.ts:348');
+      console.warn('No records found for the selected criteria. - app.component.ts:337');
       return;
     }
 
