@@ -66,7 +66,7 @@ uiConfig = {
 
   // Download panel configuration
   downloadPanelConfig = {
-    title: 'Download CSV',
+    title: 'Download',
     primaryActionLabel: 'Download',
     negativeChargesHelp:
       'Please select one country and one vendor to download negative charges data.',
